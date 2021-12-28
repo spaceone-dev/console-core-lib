@@ -4,7 +4,7 @@ import axios, {
 import jwt from 'jsonwebtoken';
 import {
     AxiosPostResponse,
-    MockInfo, SessionTimeoutCallback
+    SessionTimeoutCallback
 } from '@src/space-connector/type';
 import {
     APIError, AuthenticationError,
@@ -16,7 +16,6 @@ const ACCESS_TOKEN_KEY = 'spaceConnector/accessToken';
 const REFRESH_TOKEN_KEY = 'spaceConnector/refreshToken';
 const REFRESH_URL = '/identity/token/refresh';
 const IS_REFRESHING_KEY = 'spaceConnector/isRefreshing';
-
 
 class API {
     instance: AxiosInstance;
@@ -34,7 +33,6 @@ class API {
             'Content-Type': 'application/json'
         }
     };
-
 
     constructor(baseURL: string, sessionTimeoutCallback: SessionTimeoutCallback) {
         this.sessionTimeoutCallback = sessionTimeoutCallback;
