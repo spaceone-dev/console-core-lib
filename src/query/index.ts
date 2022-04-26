@@ -25,6 +25,9 @@ dayjs.extend(utc);
 dayjs.extend(tz);
 
 interface QueryTag extends Tag, QueryItem {}
+type ReferenceMap = Record<string, { label: string; name: string }>;
+type ReferenceStore = Record<string, ReferenceMap>;
+
 const filterToQueryTag = (
     filter: { k?: string; v: QueryStoreFilterValue; o?: RawQueryOperator },
     keyMap: Record<string, KeyItem>,
@@ -55,8 +58,9 @@ const filterToQueryTag = (
     }
     /* general case */
     const reference = keyMap[filter.k]?.reference;
-    const referenceStoreValue = referenceStore ? referenceStore.value : undefined;
-    const label = (reference && referenceStoreValue) ? referenceStoreValue[reference][filter.v.toString()]?.label : filter.v.toString();
+    const referenceStoreValue = referenceStore?.value;
+    const selectedReferenceStore = (reference && referenceStoreValue) ? ((referenceStoreValue[reference]) ?? undefined) : undefined;
+    const label = (selectedReferenceStore) ? selectedReferenceStore[filter.v.toString()]?.label : filter.v.toString();
     return {
         key: keyMap[filter.k] || { label: filter.k, name: filter.k },
         value: { label, name: filter.v },
@@ -105,7 +109,7 @@ const filterToApiQueryFilter = (_filters: QueryStoreFilter[], timezone = 'UTC') 
 export class QueryHelper {
     private static timezone: ComputedRef<string> | undefined;
 
-    private static referenceStore: ComputedRef<Object> | undefined;
+    private static referenceStore: ComputedRef<ReferenceStore> | undefined;
 
     private _keyMap: Record<string, KeyItem> = {};
 
@@ -113,9 +117,9 @@ export class QueryHelper {
 
     private _orFilters: QueryStoreFilter[] = [];
 
-    static init(timezone: ComputedRef<string>, referenceStore: ComputedRef<Object>) {
+    static init(timezone: ComputedRef<string>, referenceStore?: ComputedRef<ReferenceStore>) {
         QueryHelper.timezone = timezone;
-        QueryHelper.referenceStore = referenceStore ?? undefined;
+        QueryHelper.referenceStore = referenceStore;
     }
 
     setKeyItemSets(keyItemSets: KeyItemSet[]): this {
