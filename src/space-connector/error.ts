@@ -79,3 +79,5 @@ export const isInstanceOfBadRequestError = (e: unknown): e is BadRequestError =>
 export const isInstanceOfAuthenticationError = (e: unknown): e is AuthenticationError => e instanceof AuthenticationError;
 
 export const isInstanceOfAuthorizationError = (e: unknown): e is AuthorizationError => e instanceof AuthorizationError;
+
+export const isInstanceOfSyntaxError = (e: unknown): e is SyntaxError => e instanceof SyntaxError;
